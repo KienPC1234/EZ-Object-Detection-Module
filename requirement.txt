@@ -1,0 +1,8 @@
+numpy<2
+labelme
+pycocotools
+ultralytics
+tensorflow==2.10.1
+labelme
+git+https://github.com/KienPC1234/kientf_object_detection.git
+opencv-python
