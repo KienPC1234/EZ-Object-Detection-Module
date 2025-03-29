@@ -12,17 +12,18 @@ logger.setLevel(logging.INFO)
 
 class ColoredFormatter(logging.Formatter):
     COLORS = {
-        logging.INFO: Fore.BLUE,      # Xanh dương
-        logging.WARNING: Fore.YELLOW, # Vàng
-        logging.ERROR: Fore.RED       # Đỏ
+        logging.DEBUG: Fore.CYAN,      # Xanh cyan
+        logging.INFO: Fore.BLUE,       # Xanh dương
+        logging.WARNING: Fore.YELLOW,  # Vàng
+        logging.ERROR: Fore.RED,       # Đỏ
+        logging.CRITICAL: Fore.MAGENTA + Style.BRIGHT  # Tím + Đậm
     }
 
     def format(self, record):
-        log_color = self.COLORS.get(record.levelno, Fore.MAGENTA)  
+        log_color = self.COLORS.get(record.levelno, Fore.GREEN)  # Mặc định là trắng
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return f"{timestamp} {log_color}[{record.levelname}]{Fore.RESET} {record.getMessage()}"
-
-
+    
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(ColoredFormatter())
 

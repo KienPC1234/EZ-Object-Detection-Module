@@ -1,6 +1,5 @@
 import os
 import json
-import shutil
 import tensorflow as tf
 from object_detection.utils import dataset_util
 from PIL import Image
@@ -10,7 +9,7 @@ from ..MISC.pipeline_Maker import *
 
 class PipelineConfigParams:
     def __init__(self,  model_resolution=320, batch_size=32, learning_rate_base=0.08, 
-                 total_steps=50000, label_map_path="PATH_TO_LABEL_MAP", train_input_path="PATH_TO_Train_TFRECORD",  vaild_input_path="PATH_TO_Vaild_TFRECORD", 
+                 total_steps=50000, label_map_path=None, train_input_path=None,  vaild_input_path=None, 
                  custom_config_file=None):
         """
         Lớp chứa các tham số để tạo pipeline.config.
@@ -28,9 +27,9 @@ class PipelineConfigParams:
         self.batch_size = batch_size
         self.learning_rate_base = learning_rate_base
         self.total_steps = total_steps
-        self.label_map_path = os.path.abspath(label_map_path)
-        self.train_input_path = os.path.abspath(train_input_path)
-        self.vaild_input_path = os.path.abspath(vaild_input_path)
+        self.label_map_path = os.path.abspath(label_map_path) if label_map_path else None
+        self.train_input_path = os.path.abspath(train_input_path) if train_input_path else None
+        self.vaild_input_path = os.path.abspath(vaild_input_path) if vaild_input_path else None
         self.custom_config_file = os.path.abspath(custom_config_file) if custom_config_file else None
 
 def create_tf_example(image_path, annotations, category_mapping)-> str:
@@ -140,10 +139,13 @@ def convert_coco_to_tfrecord(input_dir, save_path="TF_DATASET", pipeline_params=
     
     if pipeline_params == None:
       pipeline_params = PipelineConfigParams()
-    
-    pipeline_params.train_input_path = os.path.join(save_path,"train.tfrecord")
-    pipeline_params.vaild_input_path = os.path.join(save_path,"valid.tfrecord")
-    pipeline_params.label_map_path= os.path.join(save_path,"label_map.pbtxt")
+      
+    if pipeline_params.train_input_path==None:
+        pipeline_params.train_input_path = os.path.join(save_path,"train.tfrecord")
+    if pipeline_params.vaild_input_path==None:
+        pipeline_params.vaild_input_path = os.path.join(save_path,"valid.tfrecord")
+    if pipeline_params.label_map_path==None:
+        pipeline_params.label_map_path= os.path.join(save_path,"label_map.pbtxt")
     
     global_categories = {}
     for subset in ['train', 'valid']:
